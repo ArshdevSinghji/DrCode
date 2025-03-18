@@ -35,7 +35,8 @@ function Login() {
         return;
       }
 
-      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.userId); // Store userId in localStorage
+      localStorage.setItem('token', data.token); // Store token in localStorage
       navigate('/home');
     } catch (err) {
       setError('Login failed. Please try again.');

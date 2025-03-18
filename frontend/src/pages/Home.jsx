@@ -6,6 +6,35 @@ import Footer from '../components/Footer';
 import style from '../styles/Home.module.css';
 
 const Home = () => {
+  const userId = localStorage.getItem("userId"); // Assuming userId is stored in localStorage
+  console.log(userId);
+  const handleAddToCart = async () => {
+    if (!userId) {
+      console.error("User not logged in");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/lead/interact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, interaction: "item added to cart" }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error(data.message);
+        return;
+      }
+
+      console.log("Interaction recorded:", data);
+    } catch (error) {
+      console.error("Failed to record interaction:", error);
+    }
+  };
   return (
     <div>
       <Navbar />
@@ -32,7 +61,8 @@ const Home = () => {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     transition={{ duration: 0.2 }}
-                    style={{ display: 'flex', justifyContent: 'center', cursor: 'pointer' }}>
+                    style={{ display: 'flex', justifyContent: 'center', cursor: 'pointer' }}
+                    onClick={handleAddToCart}>
                     <button className={style.btn}>Add to Cart</button>
                   </motion.div>
                 </div>
