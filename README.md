@@ -13,6 +13,10 @@ The **Lead Management System (LMS)** is a full-stack application designed to cap
 
 ---
 
+- **Use your email while registering**
+
+---
+
 ## 🏗️ Tech Stack
 ### **Backend:**
 - Node.js
@@ -49,7 +53,7 @@ cd frontend
 npm install
 npm start
 ```
-- The frontend will run on `http://localhost:3000`
+- The frontend will run on `http://localhost:5173`
 
 ---
 
@@ -100,11 +104,3 @@ npm start
 5. Open a Pull Request.
 
 ---
-
-## 📝 License
-This project is **MIT Licensed**.
-
----
-
-### 🎯 **Ready to Manage Leads Like a Pro? Start Now!** 🚀
-
