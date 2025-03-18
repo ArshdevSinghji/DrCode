@@ -1,0 +1,24 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #808080;
+    overflow: hidden;
+}
+.nav{
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+}
+.cart{
+    padding: 10px;
+}
+.cart button{
+    color: #fff;
+    background-color: #000;
+    border: none;
+    outline: none;
+    border-radius: 24px;
+    padding: 15px;
+    cursor: pointer;
+}

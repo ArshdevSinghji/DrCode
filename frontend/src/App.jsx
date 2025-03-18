@@ -1,18 +1,11 @@
-import React from 'react';
-import Navbar from './components/Navbar';
-import Cart from './components/Cart';
-// import Home from './pages/Home';
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Register from './components/Register';
+import Home from './pages/Home'
 
 const App = () => {
   return (
     <Router>
-      <Navbar />
       <Routes>
-        <Route path="/" element={<Register/>} />
-        <Route path="/cart" element={<Cart />} />
+        <Route path="/" element={<Home/>} />
       </Routes>
     </Router>
   );
