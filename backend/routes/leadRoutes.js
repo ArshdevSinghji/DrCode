@@ -22,6 +22,7 @@ async function generateEmailContent(leadScore, leadEmail) {
   - lead name is ${leadEmail}
   - also add some emojis to make it more engaging.
   - company name is commercify and dont put any suggestion for me to put in, do it all on your own.
+  - remove all the placeholder text.
   - Keep the email within 150 words.`;
   const result = await model.generateContent(prompt);
   return result.response.candidates[0].content.parts[0].text;
@@ -53,6 +54,7 @@ async function generateCartEmailContent(leadEmail) {
   - Keep the email within 150 words.
   - company name is commercify and dont put any suggestion for me to put in, do it all on your own.
   - add emojis to make it more engaging.
+  - remove all the placeholder text.
   `;
   const result = await model.generateContent(prompt);
   return result.response.candidates[0].content.parts[0].text;
@@ -92,6 +94,7 @@ router.post("/cart" ,async(req,res)=>{
       subject: "Thank You for your purchase!",
       text: emailContent,
     });
+    
     lead.interactions=0;
     await lead.save();
 
