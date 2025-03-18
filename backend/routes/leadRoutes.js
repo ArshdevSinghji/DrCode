@@ -8,9 +8,20 @@ const router = express.Router();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Function to generate AI email content (for logout)
-async function generateEmailContent(leadScore) {
+async function generateEmailContent(leadScore, leadEmail) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  const prompt = `Generate a personalized email based on this lead score: ${leadScore}.`;
+  const prompt = `Generate a personalized email based on this lead score: ${leadScore}.
+  - If score < 30: Express gratitude for visiting, provide basic product info.
+  - If score 30-60: Remind them of items they viewed, offer a small discount.
+  - If score 60+: Offer exclusive discount or early access to a sale.
+  - Make it engaging but professional.
+  - Also its an e-commerce website.
+  - don't write their name or any personal info.
+  - if you are giving a discount, make sure to mention the discount code (generate it on your own) and give 10% discount.
+  - lead name is ${leadEmail}
+  - also add some emojis to make it more engaging.
+  - company name is commercify and dont put any suggestion for me to put in, do it all on your own.
+  - Keep the email within 150 words.`;
   const result = await model.generateContent(prompt);
   return result.response.candidates[0].content.parts[0].text;
 }
@@ -52,7 +63,7 @@ router.post("/logout", async (req, res) => {
   const lead = await Lead.findOne({ userId });
   if (!lead) return res.status(404).json({ message: "Lead not found" });
 
-  const emailContent = await generateEmailContent(lead.score);
+  const emailContent = await generateEmailContent(lead.score, lead.email);
 
   await nodemailer.createTransport({
     service: "gmail",
@@ -66,6 +77,10 @@ router.post("/logout", async (req, res) => {
     subject: "Thank You!",
     text: emailContent,
   });
+
+  lead.interactions=0;
+  lead.score=0;
+  await lead.save();
 
   res.json({ message: "Logout successful. AI-generated email sent!" });
 });
