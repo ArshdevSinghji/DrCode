@@ -42,6 +42,21 @@ async function generateLeadScore(previousScore, interaction) {
   return isNaN(newScore) ? previousScore : newScore;
 }
 
+async function generateCartEmailContent(leadEmail) {
+  const model = genAI.getGenerativeModel({model : "gemini-1.5-flash"});
+  const prompt =`
+  Generate a personalized email based on the factor that user just purchased item from the store.
+  - Make it engaging but professional.
+  - Also its an e-commerce website.
+  - don't write their name or any personal info.
+  - Keep the email within 150 words.
+  - company name is commercify and dont put any suggestion for me to put in, do it all on your own.
+  - add emojis to make it more engaging.
+  `;
+  const result = await model.generateContent(prompt);
+  return result.response.candidates[0].content.parts[0].text;
+}
+
 // Updated endpoint for tracking interactions with AI lead scoring
 router.post("/interact", async (req, res) => {
   const { userId, interaction } = req.body;
@@ -56,6 +71,33 @@ router.post("/interact", async (req, res) => {
   await lead.save();
   res.json({ message: "Interaction recorded", lead });
 });
+
+router.post("/cart" ,async(req,res)=>{
+  const { userId } = req.body;
+  const lead = await Lead.findOne({ userId});
+  if(!lead) return res.status(404).json({message:"Lead not found"});
+
+  if(lead.score!=0){
+    const emailContent = await generateCartEmailContent(lead.email);
+    await nodemailer.createTransport({
+      service: "gmail",
+      auth: { 
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD 
+      },
+    }).sendMail({
+      from: process.env.EMAIL,
+      to: lead.email,
+      subject: "Thank You for your purchase!",
+      text: emailContent,
+    });
+    lead.interactions=0;
+    await lead.save();
+
+    res.json({ message: "Email sent!" });
+  }
+
+})
 
 // Logout endpoint remains the same (uses AI to generate email content)
 router.post("/logout", async (req, res) => {
