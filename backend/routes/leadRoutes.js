@@ -1,6 +1,7 @@
 const express = require("express");
 const Lead = require("../models/lead");
 const nodemailer = require("nodemailer");
+// const authenticateToken = require("../middleware/autherization");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
 
@@ -58,7 +59,7 @@ async function generateCartEmailContent(leadEmail) {
 }
 
 // Updated endpoint for tracking interactions with AI lead scoring
-router.post("/interact", async (req, res) => {
+router.post("/interact" ,async (req, res) => {
   const { userId, interaction } = req.body;
   const lead = await Lead.findOne({ userId });
   if (!lead) return res.status(404).json({ message: "Lead not found" });
@@ -100,7 +101,7 @@ router.post("/cart" ,async(req,res)=>{
 })
 
 // Logout endpoint remains the same (uses AI to generate email content)
-router.post("/logout", async (req, res) => {
+router.post("/logout",async (req, res) => {
   const { userId } = req.body;
   const lead = await Lead.findOne({ userId });
   if (!lead) return res.status(404).json({ message: "Lead not found" });
